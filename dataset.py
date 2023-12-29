@@ -9,7 +9,7 @@ img_suffix = '_img.npy'
 msk_suffix = '_msk.npy'
 
 class MRIDataset(Dataset):
-    def __init__(self, names, transform = None):
+    def __init__(self, names, transform=None):
         super(MRIDataset, self).__init__()
         self.names = names
         self.transform = transform
@@ -23,19 +23,24 @@ class MRIDataset(Dataset):
         msk_name = '{}{}'.format(fn, msk_suffix)
         img = np.load(img_name)
         mask = np.load(msk_name)
+        if self.transform:
+            img = self.transform(img)
         return img, mask
     
-def get_MRI_train_test_datasets():
+def get_MRI_train_test_datasets(train_transform=None, test_transform=None):
     img_list = glob.glob('{}/*{}'.format(root, img_suffix))
     names = [fn.replace(img_suffix, '') for fn in img_list]
-    names_train, names_test = train_test_split(names, test_size=0.25)
-    datasets = {
-        'train': MRIDataset(names_train),
-        'val': MRIDataset(names_test)
-    }
-    return datasets
+    train_names, test_names = train_test_split(names, test_size=0.25)
+    train_dataset = MRIDataset(train_names, transform=train_transform)
+    test_dataset = MRIDataset(test_names, transform=test_transform)
+    return train_dataset, test_dataset
+
 
 if __name__ == '__main__':
-    datasets = get_MRI_train_test_datasets()
-    for x in ['train', 'val']:
-        print('length of dataset: {}'.format(len(datasets[x])))
+    train_dataset, test_dataset = get_MRI_train_test_datasets()
+    for dataset in [train_dataset, test_dataset]:
+        print('length of dataset: {}'.format(len(dataset)))
+
+    X, y = train_dataset[0]
+    print(X.shape)
+    print(y.shape)
