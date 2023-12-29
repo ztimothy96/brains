@@ -13,7 +13,10 @@ from torchvision import transforms
 from dataset import get_MRI_train_test_datasets
 from model import UNet
 
-train_transform = transforms.ToTensor()
+train_transform = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Lambda(lambda x: torch.unsqueeze(x, 0))
+])
 test_transform = transforms.ToTensor()
 train_dataset, test_dataset = get_MRI_train_test_datasets(
     train_transform=train_transform,
@@ -33,10 +36,6 @@ def train_loop(dataloader, model, loss_fn, optimizer, print_every = 20):
     size = len(dataloader.dataset)
     model.train()
     for batch, (X, y) in enumerate(dataloader):
-        X.unsqueeze(1)
-        print(X.shape)
-        print(y.shape)
-        return
         pred = model(X)
         loss = loss_fn(pred, y)
 
