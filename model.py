@@ -48,10 +48,10 @@ class UNet(nn.Module):
     def __init__(self, C, n_classes):
         # Pytorch Conv3D: (N, C, D, H, W)
         super(UNet, self).__init__()
-        self.contract1 = ContractionBlock(C, 16, 0.1, pool=True),
-        self.contract2 = ContractionBlock(16, 32, 0.1, pool=True),
-        self.contract3 = ContractionBlock(32, 64, 0.2, pool=True),
-        self.contract4 = ContractionBlock(64, 128, 0.2, pool=True),
+        self.contract1 = ContractionBlock(C, 16, 0.1, pool=True)
+        self.contract2 = ContractionBlock(16, 32, 0.1, pool=True)
+        self.contract3 = ContractionBlock(32, 64, 0.2, pool=True)
+        self.contract4 = ContractionBlock(64, 128, 0.2, pool=True)
         self.contract5 = ContractionBlock(128, 256, 0.3, pool=False)
         self.expand1 = ExpansionBlock(256, 128, 0.2)
         self.expand2 = ExpansionBlock(128, 64, 0.2)
