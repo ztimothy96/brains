@@ -25,6 +25,7 @@ class MRIDataset(Dataset):
         mask = np.load(msk_name)
         if self.transform:
             img = self.transform(img)
+            mask = self.transform(mask)
         return img, mask
     
 def get_MRI_train_test_datasets(train_transform=None, test_transform=None):
